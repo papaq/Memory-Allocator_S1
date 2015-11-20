@@ -5,16 +5,15 @@
 
 Memory::Memory()
 {
-	this->memorySize = 2048;
 	this->listOfHeaders.push_back(MemBlockHeader(this->memorySize, 0));
-	this->startPtr = new int[this->memorySize];
+	this->startPtr = new int[this->memorySize / 4];
 }
 														
 Memory::Memory(unsigned short memorySize)
 {
 	this->memorySize = memorySize;
 	this->listOfHeaders.push_back(MemBlockHeader(memorySize, 0));
-	this->startPtr = new int[memorySize/4];
+	this->startPtr = new int[memorySize / 4];
 }
 
 Memory::~Memory()
@@ -25,9 +24,7 @@ Memory::~Memory()
 void * Memory::mem_alloc(size_t size)
 {
 	if (size <= 0)
-	{
-		return NULL;
-	}
+		return nullptr;
 	list<MemBlockHeader>::iterator iter;
 	for (iter = this->listOfHeaders.begin(); iter != this->listOfHeaders.end(); ++iter)
 	{
@@ -44,7 +41,7 @@ void * Memory::mem_alloc(size_t size)
 			return ptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void * Memory::mem_realloc(void * addr, size_t size)
@@ -53,17 +50,15 @@ void * Memory::mem_realloc(void * addr, size_t size)
 	{
 		return mem_alloc(size);
 	}
-	size_t startPoint = (size_t)addr - (size_t)this->startPtr;
+	auto startPoint = size_t(addr) - size_t(this->startPtr);
 	if (size < 0 || startPoint < 0 || startPoint >= this->memorySize)
-	{
-		return NULL;
-	}
+		return nullptr;
 	if (size == 0)
 	{
 		this->mem_free(addr);
 		return addr;
 	}
-	unsigned short ptr = (unsigned short)startPoint;
+	unsigned short ptr = unsigned short(startPoint);
 	list<MemBlockHeader>::iterator iter;
 	for (iter = this->listOfHeaders.begin(); iter != this->listOfHeaders.end(); ++iter)
 	{
@@ -84,26 +79,24 @@ void * Memory::mem_realloc(void * addr, size_t size)
 				return addr;
 			}
 			/* New size is bigger, then the previous one */
-			void *p1 = this->mem_alloc(size);
+			auto p1 = this->mem_alloc(size);
 			if (!p1)
-			{
-				return NULL;
-			}
+				return nullptr;
 			this->mem_free(addr);
 			return p1;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Memory::mem_free(void * addr)
 {
-	size_t startPoint = (size_t)addr - (size_t)this->startPtr;
+	auto startPoint = size_t(addr) - size_t(this->startPtr);
 	if (startPoint < 0 || startPoint >= this->memorySize)
 	{
 		return;
 	}
-	unsigned short ptr = (unsigned short)startPoint;
+	auto ptr = unsigned short(startPoint);
 	list<MemBlockHeader>::iterator iter;
 	for (iter = this->listOfHeaders.begin(); iter != this->listOfHeaders.end(); ++iter)
 	{
@@ -115,6 +108,11 @@ void Memory::mem_free(void * addr)
 			return;
 		}
 	}
+}
+
+int Memory::returnAllocSize(unsigned short whatIsLower)
+{
+	return whatIsLower % 4 == 0 ? whatIsLower / 4 : whatIsLower / 4 + 1;
 }
 
 list<MemBlockHeader>::iterator Memory::combineAndNext(list<MemBlockHeader>::iterator pointer)
@@ -129,10 +127,8 @@ list<MemBlockHeader>::iterator Memory::combineAndNext(list<MemBlockHeader>::iter
 list<MemBlockHeader>::iterator Memory::combineAndPrev(list<MemBlockHeader>::iterator pointer)
 {
 	if (pointer->getStatusEmpty() && (pointer-- != this->listOfHeaders.begin()) && pointer->getStatusEmpty())
-	{
 		return combineTwo(pointer);
-	}
-	return pointer++;
+	return ++pointer;
 }
 
 list<MemBlockHeader>::iterator Memory::combineTwo(list<MemBlockHeader>::iterator pointer)

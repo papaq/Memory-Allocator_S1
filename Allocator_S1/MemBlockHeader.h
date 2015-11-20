@@ -6,35 +6,21 @@ class MemBlockHeader
 	unsigned short startPoint = 0;
 public:
 	MemBlockHeader();
-	MemBlockHeader(unsigned short startPoint);
+	explicit MemBlockHeader(unsigned short startPoint);
 	MemBlockHeader(unsigned short size, unsigned short startPoint);
 	MemBlockHeader(unsigned short size, unsigned short startPoint, bool statusEmpty);
 	~MemBlockHeader();
 
-	bool inline getStatusEmpty(){
-		return statusEmpty;
-	}
+	bool getStatusEmpty() const;
 
-	unsigned short inline getSize(){
-		return size;
-	}
+	unsigned short getSize() const;
 
-	unsigned short inline getStartPoint(){
-		return startPoint;
-	}
+	unsigned short getStartPoint() const;
 
-	void inline changeStatusEmpty(){
-		statusEmpty = !statusEmpty;
-	}
+	void changeStatusEmpty();
 
-	void inline setSize(unsigned short newSize)
-	{
-		size = newSize;
-	}
+	void setSize(unsigned short newSize);
 
-	void inline setStartPoint(unsigned short newStartPoint)
-	{
-		startPoint = newStartPoint;
-	}
+	void setStartPoint(unsigned short newStartPoint);
 };
 

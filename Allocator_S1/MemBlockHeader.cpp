@@ -32,3 +32,33 @@ MemBlockHeader::MemBlockHeader(unsigned short size, unsigned short startPoint, b
 MemBlockHeader::~MemBlockHeader()
 {
 }
+
+bool MemBlockHeader::getStatusEmpty() const
+{
+	return statusEmpty;
+}
+
+unsigned short MemBlockHeader::getSize() const
+{
+	return size;
+}
+
+unsigned short MemBlockHeader::getStartPoint() const
+{
+	return startPoint;
+}
+
+void MemBlockHeader::changeStatusEmpty()
+{
+	statusEmpty = !statusEmpty;
+}
+
+void MemBlockHeader::setSize(unsigned short newSize)
+{
+	size = newSize;
+}
+
+void MemBlockHeader::setStartPoint(unsigned short newStartPoint)
+{
+	startPoint = newStartPoint;
+}

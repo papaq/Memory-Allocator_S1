@@ -7,14 +7,11 @@ using namespace std;
 
 class Memory
 {
-	unsigned short memorySize;
+	unsigned short memorySize = 2048;
 	list <MemBlockHeader> listOfHeaders;
-	int *startPtr = NULL;
+	int *startPtr = nullptr;
 
-	int inline returnAllocSize(unsigned short whatIsLower)
-	{
-		return whatIsLower % 4 == 0 ? whatIsLower / 4 : whatIsLower / 4 + 1;
-	}
+	static int inline returnAllocSize(unsigned short whatIsLower);
 
 	list<MemBlockHeader>::iterator combineAndNext(list<MemBlockHeader>::iterator pointer);
 	list<MemBlockHeader>::iterator combineAndPrev(list<MemBlockHeader>::iterator pointer);
@@ -22,7 +19,7 @@ class Memory
 
 public:
 	Memory();
-	Memory(unsigned short memorySize);
+	explicit Memory(unsigned short memorySize);
 	~Memory();
 
 	void * mem_alloc(size_t size);
